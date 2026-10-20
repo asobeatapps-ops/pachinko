@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#071225">
+<meta name="description" content="12回転＋残保留4回転、毎回1/7抽選。どこまで連チャンできるか挑戦する演出ゲーム。">
+<title>どこまで連チャン？ 1/7 RUSH</title>
+<style>
+:root{
+  --bg:#071225;--panel:#101c33;--panel2:#172640;--ink:#f7fbff;--muted:#91a4bd;
+  --cyan:#52e7ff;--pink:#ff4f9a;--gold:#ffd45f;--red:#ff4b55;--green:#61e29a;
+}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;color:var(--ink)}
+button{font:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.hidden{display:none!important}
+#city{position:fixed;inset:0;width:100%;height:100%;display:block;background:#152d4f}
+#app{position:fixed;inset:0;display:grid;place-items:center;padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+.screen{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:max(16px,env(safe-area-inset-top)) 14px max(24px,env(safe-area-inset-bottom));background:linear-gradient(#0611268a,#07101fd8);-webkit-overflow-scrolling:touch}
+.card{width:min(100%,460px);margin:auto;background:linear-gradient(160deg,#172742f5,#0b1529f7);border:1px solid #a8e9ff35;border-radius:26px;padding:22px;box-shadow:0 24px 80px #000a,inset 0 1px #fff2;backdrop-filter:blur(10px)}
+.brand{display:flex;justify-content:space-between;align-items:center;color:#8db5ca;font-size:10px;font-weight:800;letter-spacing:.14em}
+h1,h2,p{margin:0}h1{font-size:clamp(34px,10vw,52px);line-height:1.05;letter-spacing:-.06em;margin:15px 0 10px;text-shadow:0 4px 24px #49d7ff33}.rush{color:var(--gold)}
+.lead{color:#c6d5e6;line-height:1.8;font-size:13px}.spec{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:18px 0}.spec>div{background:#ffffff0c;border:1px solid #ffffff14;border-radius:13px;padding:12px 5px;text-align:center;font-size:10px;color:#9fb2c9}.spec b{display:block;color:#fff;font-size:22px;margin-top:4px}.spec .gold{color:var(--gold)}
+.primary{width:100%;border:0;border-radius:16px;padding:15px 12px;min-height:54px;background:linear-gradient(135deg,#57edff,#6a8cff 58%,#dc65ff);color:#06101e;font-weight:950;font-size:16px;box-shadow:0 6px 22px #5cdfff45,0 4px 0 #294e84;margin-top:14px}.primary:active{transform:translateY(3px);box-shadow:0 2px 0 #294e84}.sub{width:100%;border:1px solid #9edbf02d;background:#ffffff0c;color:#d8e7f3;border-radius:12px;min-height:44px;font-weight:800;font-size:12px}.row{display:flex;gap:8px;margin-top:10px}.row>*{flex:1}.fine{font-size:10px;line-height:1.7;color:#8298b1;margin-top:14px;text-align:center}
+.odds{margin-top:15px;border-top:1px solid #ffffff16;padding-top:13px}.odds h3{font-size:12px;margin:0 0 9px;color:#c9efff}.odds-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}.odds-grid div{display:flex;justify-content:space-between;gap:8px;background:#08122588;border:1px solid #ffffff12;border-radius:10px;padding:9px 10px;font-size:11px}.odds-grid span{color:#9eb3c8}.odds-grid b{color:#fff}.odds-grid .hot{color:#ffb858}.odds-grid .super{color:#ff6486}
+#machineScreen{position:absolute;inset:0;display:flex;flex-direction:column;padding:max(9px,env(safe-area-inset-top)) 9px max(10px,env(safe-area-inset-bottom));pointer-events:none}
+.hud{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:7px;pointer-events:none}.hudBox{background:#081326df;border:1px solid #b4e9ff35;border-radius:14px;padding:8px 5px;text-align:center;box-shadow:0 6px 18px #0006,inset 0 1px #fff2}.hudBox small{display:block;color:#8ba0ba;font-size:9px;letter-spacing:.08em;font-weight:800}.hudBox strong{font-size:23px;line-height:1.2;font-variant-numeric:tabular-nums}.hudBox .accent{color:var(--gold)}
+.machine{position:relative;width:min(100%,500px);flex:1;min-height:0;margin:9px auto 0;border:2px solid #aeeeff48;border-radius:25px;background:linear-gradient(145deg,#0e1d37f5,#050b17f9);box-shadow:0 14px 50px #000b,inset 0 1px #fff3;overflow:hidden;pointer-events:auto}.machine:before{content:"";position:absolute;inset:0;border-radius:23px;box-shadow:inset 0 0 0 5px #ffffff08,inset 0 0 50px #49d9ff10;pointer-events:none;z-index:9}.machineTop{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;background:linear-gradient(90deg,#081327,#172c4d,#081327);border-bottom:1px solid #b8ecff24;color:#a8bed4;font-size:10px;font-weight:900;letter-spacing:.12em}.bgBadge{padding:5px 9px;border-radius:999px;background:#ffffff0c;color:#d8f6ff}.machineBody{position:relative;height:calc(100% - 44px);min-height:420px;overflow:hidden}.cityLayer{position:absolute;inset:0;background:linear-gradient(180deg,#6cd0ff 0%,#ccecff 58%,#ffd79c 100%);transition:background .6s}.cityLayer.dusk{background:linear-gradient(180deg,#4c4a91 0%,#ff8d6f 58%,#ffd18c 100%)}.cityLayer.night{background:linear-gradient(180deg,#06112c 0%,#162d62 65%,#455d8c 100%)}.cityLayer:after{content:"";position:absolute;left:-10%;right:-10%;bottom:0;height:45%;background:linear-gradient(90deg,#162136 0 8%,#24334a 8% 15%,#172841 15% 24%,#2a384a 24% 34%,#101f35 34% 47%,#253b55 47% 58%,#14243a 58% 70%,#263b53 70% 82%,#132239 82%);clip-path:polygon(0 28%,7% 28%,7% 12%,11% 12%,11% 25%,17% 25%,17% 4%,23% 4%,23% 31%,29% 31%,29% 19%,35% 19%,35% 2%,43% 2%,43% 25%,50% 25%,50% 10%,58% 10%,58% 31%,66% 31%,66% 0,74% 0,74% 25%,82% 25%,82% 14%,89% 14%,89% 29%,100% 29%,100% 100%,0 100%);opacity:.96}.cityLayer.night:before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,#fff 0 1px,transparent 1.5px);background-size:43px 39px;opacity:.45}.reelFrame{position:absolute;left:6%;right:6%;top:19%;height:33%;border-radius:25px;padding:12px;background:linear-gradient(145deg,#dff8ffdd,#7994afcc 45%,#f7fcffcc 52%,#52677ecc);box-shadow:0 15px 28px #06102080,inset 0 0 0 3px #fff8;z-index:3}.reels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;height:100%;background:#08111fee;padding:9px;border-radius:17px;box-shadow:inset 0 8px 24px #000d}.reel{position:relative;display:grid;place-items:center;border-radius:12px;background:linear-gradient(180deg,#f8fbff,#c3dbeb 48%,#f8fbff 52%,#93adbf);overflow:hidden;box-shadow:inset 0 0 0 3px #ffffffbb,inset 0 10px 18px #fff8,0 0 18px #51d9ff33}.digit{font-size:clamp(72px,23vw,116px);font-weight:1000;line-height:1;color:#132e4a;text-shadow:0 4px 0 #fff,0 8px 18px #16324c45;transform:scaleY(1.08);font-variant-numeric:tabular-nums}.reel.spinning .digit{filter:blur(2px);animation:reelPulse .12s infinite alternate}.reel.stop{animation:reelStop .22s cubic-bezier(.2,1.7,.4,1)}@keyframes reelPulse{to{transform:translateY(3px) scaleY(.96)}}@keyframes reelStop{50%{transform:scale(1.06)}100%{transform:scale(1)}}
+.effect{position:absolute;inset:0;z-index:6;display:grid;place-items:center;pointer-events:none;text-align:center}.effectText{font-weight:1000;font-size:clamp(40px,13vw,72px);letter-spacing:-.07em;color:#fff;opacity:0;transform:scale(.35) rotate(-8deg);text-shadow:0 4px 0 #19344f,0 0 25px #4ef4ff,0 0 55px #4ef4ff}.effectText.show{animation:effectPop .85s ease-out both}.effectText.hot{color:#ffd06b;text-shadow:0 4px 0 #9a3a1e,0 0 22px #ff7a00,0 0 55px #ff3500}.effectText.super{color:#fff2bf;text-shadow:0 4px 0 #9d133c,0 0 22px #ff296d,0 0 65px #ff0055}@keyframes effectPop{0%{opacity:0;transform:scale(.3) rotate(-10deg)}32%{opacity:1;transform:scale(1.22) rotate(3deg)}70%{opacity:1;transform:scale(.96)}100%{opacity:0;transform:scale(1.05)}}
+.flash{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0}.flash.on{animation:flash .75s ease-out}@keyframes flash{0%{opacity:0;background:#fff}18%{opacity:1;background:#fff}40%{opacity:.8;background:#59e7ff}100%{opacity:0;background:#fff}}
+.statusArea{position:absolute;left:7%;right:7%;bottom:5%;z-index:8}.statusText{text-align:center;min-height:36px;font-size:13px;font-weight:900;color:#fff;text-shadow:0 2px 8px #000;line-height:1.45;margin-bottom:9px}.spinBtn{width:100%;border:0;border-radius:20px;min-height:64px;color:#0a1323;font-size:21px;font-weight:1000;letter-spacing:.05em;background:linear-gradient(180deg,#fffbd2,#ffd04e 45%,#ff9d32);box-shadow:0 6px 0 #a8601c,0 0 30px #ffd86b66,inset 0 2px #fff;transition:transform .12s,filter .12s}.spinBtn:active{transform:translateY(4px);box-shadow:0 2px 0 #a8601c}.spinBtn:disabled{filter:grayscale(.35) brightness(.72);box-shadow:0 3px 0 #6f5a43}.machineTools{display:flex;gap:7px;margin-top:8px}.toolBtn{flex:1;border:1px solid #b9edff30;border-radius:11px;background:#0d1c34db;color:#c9dced;min-height:38px;font-size:11px;font-weight:800}
+.reserves{display:flex;justify-content:center;gap:10px;margin:10px 0 3px}.hold{width:30px;height:30px;border-radius:50%;border:2px solid #9edfff88;background:radial-gradient(circle at 35% 30%,#fff,#81dcff 18%,#274d79 65%,#0a1527 100%);box-shadow:0 0 15px #4edfff66;transition:.3s}.hold.off{filter:grayscale(1);opacity:.3;box-shadow:none}.hold.hit{background:radial-gradient(circle at 35% 30%,#fff,#ffe079 20%,#ff6f39 62%,#6c0d20);box-shadow:0 0 28px #ffd45f;animation:holdHit .55s infinite alternate}@keyframes holdHit{to{transform:scale(1.18)}}
+.overlay{position:absolute;inset:0;z-index:20;background:#030815ed;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}.resultCard{width:min(100%,420px);background:linear-gradient(160deg,#152745,#091427);border:1px solid #bcefff40;border-radius:24px;padding:22px;text-align:center;box-shadow:0 25px 80px #000b}.resultCard h2{font-size:31px;margin:5px 0}.big{font-size:64px;line-height:1;font-weight:1000;color:var(--gold);margin:12px 0}.resultGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:15px 0}.resultGrid>div{background:#ffffff0a;border-radius:11px;padding:10px 3px;font-size:9px;color:#93aac2}.resultGrid b{display:block;font-size:18px;color:#fff;margin-top:4px}.countdown{font-size:12px;color:#b9cce0;margin:11px 0}.countdown b{color:var(--gold);font-size:20px}.rescueMsg{font-size:13px;color:#c7d9e7;line-height:1.7;min-height:45px}
+#infoModal{z-index:40}.modalCard{width:min(100%,430px);background:#101d32;border:1px solid #bceeff33;border-radius:24px;padding:20px}.modalCard h2{margin:0 0 12px}.closeBtn{margin-top:14px}
+.notice{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;background:#071326ee;border:1px solid #b8efff3b;border-radius:12px;padding:10px 14px;color:#fff;font-size:11px;box-shadow:0 8px 24px #0008}
+@media(max-height:700px){.machineTop{height:38px}.machineBody{min-height:360px}.reelFrame{top:15%;height:31%}.statusArea{bottom:3%}.spinBtn{min-height:54px}.digit{font-size:70px}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition:none!important}}
+</style>
+</head>
+<body>
+<canvas id="city" aria-hidden="true"></canvas>
+<div id="app">
+<section class="screen" id="home">
+  <div class="card">
+    <div class="brand"><span>ASOBEAT ORIGINAL</span><span>Ver.1.0</span></div>
+    <h1>どこまで<br><span class="rush">連チャン？</span></h1>
+    <p class="lead">12回転＋残保留4回転。<br>毎回<strong>1/7</strong>の抽選を突破し、連チャン記録を伸ばそう。</p>
+    <div class="spec"><div>通常区間<b>12回転</b></div><div>大当たり確率<b class="gold">1/7</b></div><div>残保留<b>4回転</b></div></div>
+    <button class="primary" id="enterBtn">ゲームスタート</button>
+    <div class="row"><button class="sub" id="homeInfo">演出信頼度</button><button class="sub speedToggle">演出速度：標準</button></div>
+    <div class="odds"><h3>主な演出の信頼度</h3><div class="odds-grid">
+      <div><span>夕方背景</span><b>10%</b></div><div><span>夜背景</span><b>40%</b></div>
+      <div><span>偶数リーチ</span><b>5%</b></div><div><span>奇数リーチ</span><b>20%</b></div>
+      <div><span>「熱」</span><b class="hot">60%</b></div><div><span>「激アツ」</span><b class="super">90%</b></div>
+    </div></div>
+    <p class="fine">演出はすべてオリジナル。現金・景品・課金要素のない演出ゲームです。<br>表示信頼度は長期的な抽選値の目安です。</p>
+  </div>
+</section>
+
+<section id="machineScreen" class="hidden">
+  <div class="hud">
+    <div class="hudBox"><small>連チャン</small><strong><span id="chain">0</span>連</strong></div>
+    <div class="hudBox"><small>残り回転</small><strong class="accent"><span id="remaining">12</span> / 12</strong></div>
+    <div class="hudBox"><small>自己ベスト</small><strong><span id="best">0</span>連</strong></div>
+  </div>
+  <div class="machine">
+    <div class="machineTop"><span>1/7 RUSH SYSTEM</span><span class="bgBadge" id="bgBadge">昼背景</span></div>
+    <div class="machineBody">
+      <div class="cityLayer" id="cityLayer"></div>
+      <div class="reelFrame"><div class="reels">
+        <div class="reel" id="reel0"><div class="digit">1</div></div>
+        <div class="reel" id="reel1"><div class="digit">2</div></div>
+        <div class="reel" id="reel2"><div class="digit">3</div></div>
+      </div></div>
+      <div class="flash" id="flash"></div>
+      <div class="effect"><div class="effectText" id="effectText"></div></div>
+      <div class="statusArea">
+        <div class="statusText" id="statusText">STARTを押して抽選開始</div>
+        <button class="spinBtn" id="spinBtn">START</button>
+        <div class="machineTools"><button class="toolBtn" id="machineInfo">信頼度</button><button class="toolBtn speedToggle">演出速度：標準</button><button class="toolBtn" id="soundBtn">音：ON</button></div>
+      </div>
+      <div class="overlay hidden" id="resultOverlay">
+        <div class="resultCard">
+          <div class="brand"><span>RUSH RESULT</span><span>1/7</span></div>
+          <h2 id="resultTitle">結果発表</h2>
+          <div class="big"><span id="resultChain">0</span>連</div>
+          <div class="resultGrid"><div>総回転数<b id="totalSpins">0</b></div><div>大当たり<b id="totalHits">0</b></div><div>自己ベスト<b id="resultBest">0</b></div></div>
+          <div id="residualArea">
+            <div class="rescueMsg" id="rescueMsg">残保留を確認しています…</div>
+            <div class="reserves" id="reserveRow"><i class="hold"></i><i class="hold"></i><i class="hold"></i><i class="hold"></i></div>
+            <div class="countdown">残保留判定まで <b id="rescueCount">5</b></div>
+          </div>
+          <div id="finalButtons" class="hidden"><button class="primary" id="retryBtn">もう一度挑戦</button><div class="row"><button class="sub" id="shareBtn">Xで結果を共有</button><button class="sub" id="homeBtn">タイトルへ</button></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="screen hidden" id="infoModal">
+ <div class="modalCard"><div class="brand"><span>演出信頼度</span><span>長期的な目安</span></div><h2>期待度の見方</h2><div class="odds-grid"><div><span>夕方背景</span><b>10%</b></div><div><span>夜背景</span><b>40%</b></div><div><span>偶数リーチ</span><b>5%</b></div><div><span>奇数リーチ</span><b>20%</b></div><div><span>「熱」</span><b class="hot">60%</b></div><div><span>「激アツ」</span><b class="super">90%</b></div></div><p class="lead" style="font-size:11px;margin-top:14px">抽選結果と演出を別々に管理し、全体の大当たり確率が1/7になるよう調整しています。夕方・夜背景は回転開始時、熱・激アツはリーチ後に出現します。</p><button class="primary closeBtn" id="closeInfo">閉じる</button></div>
+</section>
+<div class="notice hidden" id="notice"></div>
+</div>
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const reels=[0,1,2].map(i=>$('reel'+i));
+const digits=reels.map(r=>r.querySelector('.digit'));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+let remaining=12,chain=0,best=0,totalSpins=0,totalHits=0,busy=false,fast=false,soundOn=true,spinToken=0;
+let reelTimers=[null,null,null],noticeTimer=0,audio=null;
+try{best=Number(localStorage.getItem('rush7_best')||0)}catch(e){}
+$('best').textContent=best;
+const SCENARIOS=[
+ {id:'none',w:.461642857143,hit:0,reach:false},
+ {id:'even',w:.12,hit:.05,reach:true,parity:'even'},
+ {id:'odd',w:.32,hit:.20,reach:true,parity:'odd'},
+ {id:'heat',w:.06,hit:.60,reach:true,parity:'odd',word:'熱'},
+ {id:'super',w:.015,hit:.90,reach:true,parity:'odd',word:'激アツ'},
+ {id:'direct',w:.023357142857,hit:1,reach:false,direct:true}
+];
+function randInt(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function pickScenario(){let r=Math.random(),sum=0;for(const s of SCENARIOS){sum+=s.w;if(r<sum)return s}return SCENARIOS[0]}
+function drawOutcome(){let scenario=pickScenario();return{scenario,hit:Math.random()<scenario.hit}}
+function pickBackground(hit){let r=Math.random();if(hit){if(r<.10)return'night';if(r<.17)return'dusk'}else{if(r<.025)return'night';if(r<.13)return'dusk'}return'day'}
+function targetFor(s){if(s.parity==='even')return pick([2,4,6,8]);if(s.parity==='odd'||s.word||s.direct)return pick([1,3,5,7]);return randInt(1,8)}
+function tone(f=440,d=.1,type='sine',vol=.05,end=f*.7){if(!soundOn)return;try{const A=window.AudioContext||window.webkitAudioContext;audio=audio||new A();if(audio.state==='suspended')audio.resume();let t=audio.currentTime,o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(Math.max(30,end),t+d);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(audio.destination);o.start();o.stop(t+d)}catch(e){}}
+function chord(){[330,440,550,660].forEach((f,i)=>setTimeout(()=>tone(f,.35,'triangle',.06,f*1.8),i*80))}
+function toast(t){$('notice').textContent=t;$('notice').classList.remove('hidden');clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>$('notice').classList.add('hidden'),2200)}
+function scaled(ms){return fast?Math.max(100,ms*.48):ms}
+function setBg(mode){let layer=$('cityLayer');layer.className='cityLayer'+(mode==='day'?'':' '+mode);$('bgBadge').textContent=mode==='night'?'夜背景':mode==='dusk'?'夕方背景':'昼背景'}
+function hud(){$('remaining').textContent=remaining;$('chain').textContent=chain;$('best').textContent=best}
+function spinReel(i){clearInterval(reelTimers[i]);reels[i].classList.add('spinning');reels[i].classList.remove('stop');reelTimers[i]=setInterval(()=>digits[i].textContent=randInt(1,8),fast?45:65)}
+function stopReel(i,value){clearInterval(reelTimers[i]);reelTimers[i]=null;digits[i].textContent=value;reels[i].classList.remove('spinning');reels[i].classList.remove('stop');void reels[i].offsetWidth;reels[i].classList.add('stop');tone(260+i*80,.08,'square',.035,180)}
+function stopAll(){for(let i=0;i<3;i++)clearInterval(reelTimers[i]);reelTimers=[null,null,null]}
+function effect(text,kind=''){let e=$('effectText');e.className='effectText '+kind;e.textContent=text;void e.offsetWidth;e.classList.add('show')}
+function flash(){let f=$('flash');f.classList.remove('on');void f.offsetWidth;f.classList.add('on')}
+function missDigits(){let a=randInt(1,8),b=randInt(1,8),c=randInt(1,8);while(b===a)b=randInt(1,8);while(c===b||c===a)c=randInt(1,8);return[a,b,c]}
+async function jackpot(symbol,source='通常大当たり'){
+ totalHits++;chain++;remaining=12;if(chain>best){best=chain;try{localStorage.setItem('rush7_best',String(best))}catch(e){}}hud();
+ flash();effect('大当たり!!','super');chord();$('statusText').textContent=`${source}｜${symbol}図柄揃い　回転数が12へ復活！`;
+ await sleep(scaled(1900));$('statusText').textContent='STARTを押して次の回転へ';$('spinBtn').disabled=false;$('spinBtn').textContent='START';busy=false;
+}
+async function playSpin(){
+ if(busy)return;busy=true;$('spinBtn').disabled=true;$('spinBtn').textContent='抽選中…';remaining--;totalSpins++;hud();let token=++spinToken;
+ const out=drawOutcome(),s=out.scenario,hit=out.hit,bg=pickBackground(hit),target=targetFor(s);setBg(bg);
+ $('statusText').textContent=bg==='night'?'夜の気配…':bg==='dusk'?'夕焼けが街を染める…':'図柄変動開始';
+ if(bg==='night'){effect('夜背景','');tone(180,.35,'sawtooth',.05,90)}else if(bg==='dusk'){tone(280,.18,'triangle',.035,180)}
+ [0,1,2].forEach(spinReel);tone(120,.45,'sawtooth',.035,260);
+ await sleep(scaled(900));if(token!==spinToken)return;
+ if(s.reach){stopReel(0,target)}else if(s.direct){stopReel(0,randInt(1,8))}else{let m=missDigits();stopReel(0,m[0]);out.miss=m}
+ await sleep(scaled(900));if(token!==spinToken)return;
+ if(s.reach){stopReel(2,target);$('statusText').textContent=`${target}リーチ！`;effect('リーチ!!','');tone(360,.28,'square',.05,720)}else if(s.direct){stopReel(2,randInt(1,8))}else{stopReel(2,out.miss[2])}
+ await sleep(scaled(850));if(token!==spinToken)return;
+ if(!s.reach){
+   if(s.direct){stopReel(1,randInt(1,8));$('statusText').textContent='ハズレ…と思いきや';await sleep(scaled(450));effect('復活!!','super');flash();tone(90,.45,'sawtooth',.08,900);await sleep(scaled(650));[0,1,2].forEach(i=>stopReel(i,7));await sleep(scaled(350));return jackpot(7,'突当たり')}
+   stopReel(1,out.miss[1]);$('statusText').textContent='リーチならず';tone(120,.18,'triangle',.04,70);await sleep(scaled(700));return afterMiss();
+ }
+ if(s.word){await sleep(scaled(450));effect(s.word,s.id==='super'?'super':'hot');tone(s.id==='super'?180:260,.55,'sawtooth',.07,s.id==='super'?900:620)}
+ $('statusText').textContent=s.word?`${s.word}｜最後の図柄に注目`:'最後の図柄に注目';
+ const seq=[1,8,2,7,3,6,4,5,target];for(let k=0;k<(fast?5:9);k++){digits[1].textContent=seq[k%seq.length];tone(180+k*16,.045,'square',.012,150);await sleep(scaled(150+k*25))}
+ let middle=hit?target:randInt(1,8);while(!hit&&middle===target)middle=randInt(1,8);stopReel(1,middle);await sleep(scaled(420));
+ if(hit)return jackpot(target,s.word||`${target}リーチ`);
+ $('statusText').textContent='惜しい…！';effect('ハズレ','');tone(130,.25,'triangle',.045,70);await sleep(scaled(650));afterMiss();
+}
+function afterMiss(){if(remaining<=0){beginResidual()}else{$('statusText').textContent=`残り${remaining}回転｜STARTで次へ`;$('spinBtn').disabled=false;$('spinBtn').textContent='START';busy=false}}
+async function beginResidual(){
+ busy=true;$('spinBtn').disabled=true;$('resultOverlay').classList.remove('hidden');$('finalButtons').classList.add('hidden');$('residualArea').classList.remove('hidden');
+ $('resultTitle').textContent='いったん終了…';$('resultChain').textContent=chain;$('totalSpins').textContent=totalSpins;$('totalHits').textContent=totalHits;$('resultBest').textContent=best;
+ const holds=[...Array(4)].map(()=>drawOutcome()),hitIndex=holds.findIndex(x=>x.hit),dots=[...$('reserveRow').children];dots.forEach(d=>d.className='hold');
+ $('rescueMsg').textContent='残保留4回転を確認しています…';
+ for(let sec=5;sec>=1;sec--){$('rescueCount').textContent=sec;tone(95+sec*12,.06,'sine',.025,80);await sleep(1000)}
+ for(let i=0;i<4;i++){dots[i].classList.add('off');tone(220+i*35,.08,'square',.025,150);await sleep(fast?140:260);if(i===hitIndex){dots[i].className='hold hit';break}}
+ if(hitIndex>=0){$('rescueMsg').textContent=`残保留${hitIndex+1}個目で大当たり！`;$('resultTitle').textContent='復活継続!!';effect('復活!!','super');flash();chord();await sleep(scaled(1500));$('resultOverlay').classList.add('hidden');[0,1,2].forEach(i=>stopReel(i,7));return jackpot(7,'残保留復活')}
+ $('rescueMsg').textContent='残保留はすべてハズレ';$('resultTitle').textContent='RUSH終了';$('rescueCount').textContent='0';$('finalButtons').classList.remove('hidden');busy=false;
+}
+function resetGame(){stopAll();spinToken++;remaining=12;chain=0;totalSpins=0;totalHits=0;busy=false;hud();setBg('day');digits.forEach((d,i)=>d.textContent=i+1);$('resultOverlay').classList.add('hidden');$('spinBtn').disabled=false;$('spinBtn').textContent='START';$('statusText').textContent='STARTを押して抽選開始'}
+function openMachine(){$('home').classList.add('hidden');$('machineScreen').classList.remove('hidden');resetGame()}
+function openInfo(){$('infoModal').classList.remove('hidden')}
+function toggleSpeed(){fast=!fast;document.querySelectorAll('.speedToggle').forEach(b=>b.textContent=`演出速度：${fast?'短縮':'標準'}`);toast(fast?'短縮演出に変更しました':'標準演出に変更しました')}
+function share(){let text=`🎰 1/7 RUSHで ${chain}連！\n12回転＋残保留4回転、あなたは何連できる？\n#連チャンチャレンジ #ブラウザゲーム #アソビート`;window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text),'_blank','noopener')}
+$('enterBtn').onclick=openMachine;$('spinBtn').onclick=playSpin;$('homeInfo').onclick=openInfo;$('machineInfo').onclick=openInfo;$('closeInfo').onclick=()=>$('infoModal').classList.add('hidden');document.querySelectorAll('.speedToggle').forEach(b=>b.onclick=toggleSpeed);$('soundBtn').onclick=()=>{soundOn=!soundOn;$('soundBtn').textContent=`音：${soundOn?'ON':'OFF'}`};$('retryBtn').onclick=resetGame;$('homeBtn').onclick=()=>{$('machineScreen').classList.add('hidden');$('home').classList.remove('hidden')};$('shareBtn').onclick=share;
+// Decorative background canvas
+const c=$('city'),cx=c.getContext('2d');let W=0,H=0,DPR=1,tm=0;function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;c.width=W*DPR;c.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0)}function frame(t){tm=t*.001;let g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#071229');g.addColorStop(.55,'#183a63');g.addColorStop(1,'#101725');cx.fillStyle=g;cx.fillRect(0,0,W,H);for(let i=0;i<45;i++){let x=(i*127)%W,y=(i*67)%(H*.62),a=.18+.18*Math.sin(tm*1.4+i);cx.globalAlpha=a;cx.fillStyle='#d9f5ff';cx.beginPath();cx.arc(x,y,i%8===0?1.5:.7,0,Math.PI*2);cx.fill()}cx.globalAlpha=1;requestAnimationFrame(frame)}addEventListener('resize',resize);resize();requestAnimationFrame(frame);hud();
+})();
+</script>
+</body>
+</html>
